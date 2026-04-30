@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pressure Exposure Diagnostic Toolkit — Mind Anchor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight: #060A12;
+    --navy: #0C1422;
+    --navy-2: #111C30;
+    --gold: #C9A84C;
+    --gold-light: #E2BE72;
+    --gold-dim: #8B6E2E;
+    --cream: #EDE8DC;
+    --muted: #6B7280;
+    --soft: #9CA3AF;
+    --border: rgba(201,168,76,0.18);
+    --border-strong: rgba(201,168,76,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--midnight);
+    color: var(--cream);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── COVER PAGE ─── */
+  .cover {
+    min-height: 100vh;
+    background: var(--midnight);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 30%, rgba(201,168,76,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(12,20,34,0.8) 0%, transparent 60%);
+  }
+
+  .cover-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  .cover-anchor {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 32px;
+    animation: fadeDown 1s ease both;
+  }
+
+  .anchor-svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.9;
+  }
+
+  .cover-eyebrow {
+    position: relative;
+    z-index: 1;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    animation: fadeDown 1s 0.1s ease both;
+  }
+
+  .cover-title {
+    position: relative;
+    z-index: 1;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 7vw, 68px);
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    animation: fadeDown 1s 0.2s ease both;
+  }
+
+  .cover-subtitle {
+    position: relative;
+    z-index: 1;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--soft);
+    letter-spacing: 0.05em;
+    margin-bottom: 48px;
+    max-width: 420px;
+    line-height: 1.6;
+    animation: fadeDown 1s 0.3s ease both;
+  }
+
+  .cover-divider {
+    position: relative;
+    z-index: 1;
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.4;
+    margin: 0 auto 48px;
+    animation: fadeDown 1s 0.35s ease both;
+  }
+
+  .cover-cta {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--gold);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: fadeDown 1s 0.45s ease both;
+  }
+
+  .cover-cta:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+
+  .cover-meta {
+    position: relative;
+    z-index: 1;
+    margin-top: 64px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    animation: fadeDown 1s 0.55s ease both;
+  }
+
+  /* ─── PAGE SECTIONS ─── */
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 600;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--soft);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 520px;
+  }
+
+  /* ─── DIVIDER ─── */
+  .gold-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 64px 0;
+  }
+
+  /* ─── SCORE SECTION ─── */
+  .score-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .score-item {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    transition: border-color 0.2s;
+  }
+
+  .score-item:hover { border-color: var(--border-strong); }
+
+  .score-question {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .score-question span {
+    display: inline-block;
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 2px 8px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .rating-track {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .rating-btn {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+  }
+
+  .rating-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .rating-btn.selected {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--midnight);
+  }
+
+  .score-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* ─── SCORE RESULTS ─── */
+  .score-results {
+    margin-top: 40px;
+    background: var(--navy);
+    border: 1px solid var(--border-strong);
+    padding: 28px 24px;
+    display: none;
+  }
+
+  .score-results.visible { display: block; }
+
+  .score-results-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 12px;
+  }
+
+  .score-results-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .score-results-total {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .score-bar-track {
+    height: 3px;
+    background: rgba(201,168,76,0.12);
+    margin-bottom: 20px;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .score-insight {
+    font-size: 13px;
+    color: var(--soft);
+    line-height: 1.7;
+  }
+
+  .score-insight strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  .priority-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--border-strong);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    margin-top: 16px;
+  }
+
+  .footer-insight {
+    margin-top: 24px;
+    padding: 14px 20px;
+    border-left: 2px solid var(--gold);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .footer-insight p {
+    font-size: 12px;
+    color: var(--soft);
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+
+  .footer-insight strong { color: var(--gold); font-style: normal; }
+
+  /* ─── REFLECTION SECTION ─── */
+  .reflection-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .reflection-item {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    transition: border-color 0.2s;
+  }
+
+  .reflection-item:focus-within { border-color: var(--border-strong); }
+
+  .reflection-q {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .reflection-q::before {
+    content: '→';
+    color: var(--gold-dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .reflection-box {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(201,168,76,0.12);
+    color: var(--cream);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 12px 14px;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .reflection-box:focus { border-color: var(--gold-dim); }
+  .reflection-box::placeholder { color: var(--muted); font-style: italic; }
+
+  /* ─── REDESIGN SECTION ─── */
+  .redesign-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 600px) {
+    .redesign-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .redesign-block {
+    border: 1px solid var(--border-strong);
+    padding: 28px 20px;
+    position: relative;
+    background: var(--navy);
+    transition: background 0.2s;
+  }
+
+  .redesign-block:hover { background: rgba(12,20,34,0.9); }
+
+  .redesign-block-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+
+  .redesign-block-sub {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+  }
+
+  .redesign-prompt {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .redesign-input {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: none;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    color: var(--cream);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 10px 0;
+    resize: none;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .redesign-input:focus { border-bottom-color: var(--gold); }
+  .redesign-input::placeholder { color: var(--muted); font-style: italic; }
+
+  /* ─── ACTIONS ─── */
+  .actions-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 48px;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--midnight);
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover { background: var(--gold-light); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--border-strong);
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(201,168,76,0.06); }
+
+  /* ─── BRANDING FOOTER ─── */
+  .brand-footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .brand-footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .brand-footer-tag {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── CASE STUDY BLOCK ─── */
+  .case-study {
+    border-left: 2px solid var(--gold);
+    background: rgba(201,168,76,0.04);
+    padding: 24px 24px 24px 28px;
+    margin-top: 36px;
+  }
+
+  .case-study-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .case-study-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .case-study-body {
+    font-size: 13px;
+    color: var(--soft);
+    line-height: 1.75;
+  }
+
+  .case-study-body p { margin-bottom: 8px; }
+  .case-study-body p:last-child { margin-bottom: 0; }
+
+  .case-study-body strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  /* ─── SHARE TRIGGER ─── */
+  .share-trigger {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: rgba(201,168,76,0.06);
+    border: 1px dashed rgba(201,168,76,0.3);
+    font-size: 12px;
+    color: var(--soft);
+    line-height: 1.6;
+  }
+
+  .share-trigger strong { color: var(--gold); }
+
+  /* ─── NEXT STEP CTA ─── */
+  .next-step-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .next-step-inner {
+    border-top: 1px solid var(--border);
+    padding-top: 48px;
+  }
+
+  .next-step-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 12px;
+  }
+
+  .next-step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+
+  .next-step-desc {
+    font-size: 14px;
+    color: var(--soft);
+    line-height: 1.7;
+    max-width: 500px;
+    margin-bottom: 32px;
+  }
+
+  .next-step-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 480px;
+  }
+
+  .next-step-option {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .next-step-option:first-child { border-top: 1px solid var(--border); }
+
+  .option-arrow {
+    color: var(--gold);
+    font-size: 14px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .option-text {
+    font-size: 14px;
+    color: var(--soft);
+    line-height: 1.6;
+  }
+
+  .option-text strong {
+    color: var(--cream);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .option-text em {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* ─── PRINT ─── */
+  @media print {
+    .cover-cta, .actions-row { display: none; }
+    .cover { min-height: auto; padding: 40px; }
+  }
+
+  /* ─── MOBILE POLISH ─── */
+  @media (max-width: 480px) {
+    .rating-btn { width: 32px; height: 32px; font-size: 11px; }
+    .page { padding: 60px 16px; }
+    .redesign-block { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════ -->
+<section class="cover" id="cover">
+  <div class="cover-noise"></div>
+
+  <div class="cover-anchor">
+    <svg class="anchor-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="14" r="6" stroke="#C9A84C" stroke-width="1.5"/>
+      <line x1="32" y1="20" x2="32" y2="52" stroke="#C9A84C" stroke-width="1.5"/>
+      <path d="M16 28 C16 28 12 36 12 44 C12 52 20 56 32 56 C44 56 52 52 52 44 C52 36 48 28 48 28" stroke="#C9A84C" stroke-width="1.5" fill="none"/>
+      <line x1="20" y1="30" x2="44" y2="30" stroke="#C9A84C" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <p class="cover-eyebrow">Mind Anchor · Diagnostic Series</p>
+
+  <h1 class="cover-title">Pressure Exposure<br>Diagnostic Toolkit</h1>
+
+  <div class="cover-divider"></div>
+
+  <p class="cover-subtitle">Find what breaks before failure gets expensive.</p>
+
+  <a href="#score" class="cover-cta">
+    Begin Diagnostic
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M7 1L7 13M7 13L2 8M7 13L12 8" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
+  </a>
+
+  <p class="cover-meta">Private · Not for distribution</p>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     SECTION 1 — SCORE YOURSELF
+══════════════════════════════════════ -->
+<section id="score">
+  <div class="page">
+    <div class="fade-in">
+      <p class="section-label">Section 01</p>
+      <h2 class="section-title">Score Yourself</h2>
+      <p class="section-desc">Rate each statement honestly from 1 (never true) to 10 (always true). Do not score what you intend — score what actually happens when pressure rises.</p>
+    </div>
+
+    <div class="score-grid fade-in">
+
+      <div class="score-item">
+        <p class="score-question"><span>01</span>Roles stay clear under stress</p>
+        <div class="rating-track" data-q="0">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>Breaks down</span><span>Holds firm</span></div>
+      </div>
+
+      <div class="score-item">
+        <p class="score-question"><span>02</span>Decisions remain fast under pressure</p>
+        <div class="rating-track" data-q="1">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>Grinds to halt</span><span>Stays sharp</span></div>
+      </div>
+
+      <div class="score-item">
+        <p class="score-question"><span>03</span>Communication improves under urgency</p>
+        <div class="rating-track" data-q="2">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>Collapses</span><span>Sharpens</span></div>
+      </div>
+
+      <div class="score-item">
+        <p class="score-question"><span>04</span>Quality survives growth</p>
+        <div class="rating-track" data-q="3">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>Degrades quickly</span><span>Holds standard</span></div>
+      </div>
+
+      <div class="score-item">
+        <p class="score-question"><span>05</span>No single person is the bottleneck</p>
+        <div class="rating-track" data-q="4">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>One person holds it</span><span>Fully distributed</span></div>
+      </div>
+
+      <div class="score-item">
+        <p class="score-question"><span>06</span>Problems surface early</p>
+        <div class="rating-track" data-q="5">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>Crisis arrives late</span><span>Early signals visible</span></div>
+      </div>
+
+      <div class="score-item">
+        <p class="score-question"><span>07</span>Emotions don't run operations</p>
+        <div class="rating-track" data-q="6">
+          <button class="rating-btn" data-v="1">1</button><button class="rating-btn" data-v="2">2</button>
+          <button class="rating-btn" data-v="3">3</button><button class="rating-btn" data-v="4">4</button>
+          <button class="rating-btn" data-v="5">5</button><button class="rating-btn" data-v="6">6</button>
+          <button class="rating-btn" data-v="7">7</button><button class="rating-btn" data-v="8">8</button>
+          <button class="rating-btn" data-v="9">9</button><button class="rating-btn" data-v="10">10</button>
+        </div>
+        <div class="score-labels"><span>Reactive decisions</span><span>Calm under fire</span></div>
+      </div>
+
+    </div><!-- /score-grid -->
+
+    <!-- Results panel -->
+    <div class="score-results fade-in" id="scoreResults">
+      <p class="score-results-label">Your Diagnostic Score</p>
+      <div class="score-results-number" id="scoreNum">—</div>
+      <p class="score-results-total" id="scoreTotal">out of 70 · <span id="scoreAnswered">0</span> of 7 answered</p>
+      <div class="score-bar-track">
+        <div class="score-bar-fill" id="scoreBar"></div>
+      </div>
+      <p class="score-insight" id="scoreInsight">Complete all 7 questions to see your full picture.</p>
+      <div id="priorityArea"></div>
+      <div class="share-trigger" id="shareTrigger" style="display:none;">
+        <strong>Your score is below 42.</strong> You have real redesign work to do — and that's valuable information.<br>
+        → Screenshot your score &amp; tag <strong>Mind Anchor</strong> on LinkedIn.
+      </div>
+    </div>
+
+    <div class="footer-insight fade-in">
+      <p><strong>Principle:</strong> Your lowest score is not your weakness — it is your redesign priority. That is where pressure will strike first.</p>
+    </div>
+
+  </div><!-- /page -->
+</section>
+
+
+<!-- ══════════════════════════════════════
+     CASE STUDY
+══════════════════════════════════════ -->
+<section id="case-study">
+  <div class="page" style="padding-top:0;">
+    <div class="case-study fade-in">
+      <p class="case-study-label">What This Looks Like in Reality</p>
+      <h3 class="case-study-title">A startup scales from 10 → 40 people.</h3>
+      <div class="case-study-body">
+        <p>Under calm conditions, the team looked functional. Decisions were fast. Everyone knew their role. Communication was sharp.</p>
+        <p>Then growth arrived. And under pressure:</p>
+        <p>→ decisions slowed to a crawl<br>
+           → the founder became the bottleneck on every call<br>
+           → team members waited instead of acting</p>
+        <p>They blamed the growth. They hired faster. They added more meetings.</p>
+        <p>Nothing changed. Because the problem wasn't growth.</p>
+        <p>The problem was <strong>decision architecture that was hidden by calm conditions</strong>. The team had never needed real clarity — until the moment they needed it most.</p>
+        <p>The fix wasn't motivation. It was redesign.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     SECTION 2 — REFLECTION QUESTIONS
+══════════════════════════════════════ -->
+<section id="reflect">
+  <div class="page">
+    <hr class="gold-rule">
+
+    <div class="fade-in">
+      <p class="section-label">Section 02</p>
+      <h2 class="section-title">Reflection Questions</h2>
+      <p class="section-desc">Write honestly. These answers are yours alone. The value is in the specificity — vague answers produce vague redesigns.</p>
+    </div>
+
+    <div class="reflection-grid fade-in">
+
+      <div class="reflection-item">
+        <p class="reflection-q">What fails first when pressure rises?</p>
+        <textarea class="reflection-box" placeholder="Be specific. Name the actual function, person, or habit that breaks…"></textarea>
+      </div>
+
+      <div class="reflection-item">
+        <p class="reflection-q">What only works in calm conditions?</p>
+        <textarea class="reflection-box" placeholder="Think about routines, processes, or agreements that silently depend on easy circumstances…"></textarea>
+      </div>
+
+      <div class="reflection-item">
+        <p class="reflection-q">Which person carries too much load?</p>
+        <textarea class="reflection-box" placeholder="Who is the invisible load-bearer — and what happens when they're unavailable?"></textarea>
+      </div>
+
+      <div class="reflection-item">
+        <p class="reflection-q">What workaround keeps repeating?</p>
+        <textarea class="reflection-box" placeholder="Name the patch. Every patch that gets reapplied is a system flaw wearing a costume…"></textarea>
+      </div>
+
+      <div class="reflection-item">
+        <p class="reflection-q">Where does blame replace ownership?</p>
+        <textarea class="reflection-q" style="display:none"></textarea>
+        <p class="reflection-q">Where does blame replace ownership?</p>
+        <textarea class="reflection-box" placeholder="When things go wrong under pressure, who or what gets blamed — instead of redesigned?"></textarea>
+      </div>
+
+      <div class="reflection-item">
+        <p class="reflection-q">What truth arrives too late?</p>
+        <textarea class="reflection-box" placeholder="What feedback loop is too slow? Where do you learn about the damage after the damage?"></textarea>
+      </div>
+
+    </div><!-- /reflection-grid -->
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     SECTION 3 — REDESIGN ACTION PLAN
+══════════════════════════════════════ -->
+<section id="redesign">
+  <div class="page">
+    <hr class="gold-rule">
+
+    <div class="fade-in">
+      <p class="section-label">Section 03</p>
+      <h2 class="section-title">Redesign Action Plan</h2>
+      <p class="section-desc">Use what pressure revealed. Do not patch symptoms. Redesign the architecture. One clear decision in each block is more valuable than ten vague intentions.</p>
+    </div>
+
+    <div class="redesign-grid fade-in">
+
+      <div class="redesign-block">
+        <div class="redesign-block-label">REMOVE</div>
+        <div class="redesign-block-sub">Eliminate fragile dependencies</div>
+        <p class="redesign-prompt">What single-point dependency, brittle habit, or hidden assumption must be eliminated from the system?</p>
+        <textarea class="redesign-input" placeholder="Name what must go…"></textarea>
+      </div>
+
+      <div class="redesign-block">
+        <div class="redesign-block-label">BUILD</div>
+        <div class="redesign-block-sub">Strengthen core capability</div>
+        <p class="redesign-prompt">What capability, buffer, process, or skill must be deliberately built before the next pressure cycle arrives?</p>
+        <textarea class="redesign-input" placeholder="Name what must be built…"></textarea>
+      </div>
+
+      <div class="redesign-block">
+        <div class="redesign-block-label">TEST</div>
+        <div class="redesign-block-sub">Simulate pressure deliberately</div>
+        <p class="redesign-prompt">How will you deliberately stress-test the redesign before real pressure arrives? What simulation can you run?</p>
+        <textarea class="redesign-input" placeholder="Name the test…"></textarea>
+      </div>
+
+    </div><!-- /redesign-grid -->
+
+    <div class="actions-row fade-in">
+      <button class="btn-primary" onclick="window.print()">Export as PDF</button>
+      <button class="btn-secondary" onclick="clearAll()">Reset Toolkit</button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     NEXT STEP
+══════════════════════════════════════ -->
+<section class="next-step-section">
+  <div class="next-step-inner fade-in">
+    <p class="next-step-label">Next Step</p>
+    <h2 class="next-step-title">Take This Further</h2>
+    <p class="next-step-desc">If you want a deeper system audit for your team, business, or personal systems — there are two ways to go deeper.</p>
+    <div class="next-step-options">
+      <div class="next-step-option">
+        <span class="option-arrow">→</span>
+        <div class="option-text">
+          <strong>DM "PRESSURE" on LinkedIn</strong>
+          I'll help you identify your weakest structural point and where to begin redesign.
+        </div>
+      </div>
+      <div class="next-step-option">
+        <span class="option-arrow">→</span>
+        <div class="option-text">
+          <strong>Join Mind Anchor Weekly</strong>
+          Frameworks, diagnostics, and system thinking — delivered weekly.<br>
+          <em>Free. No noise.</em>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
+     BRAND FOOTER
+══════════════════════════════════════ -->
+<footer class="brand-footer">
+  <div class="brand-footer-name">Jai Nakra</div>
+  <p class="brand-footer-tag" style="color:var(--gold); font-size:11px; letter-spacing:0.12em; margin-bottom:6px;">Founder, Mind Anchor</p>
+  <p class="brand-footer-tag">Mental models for founders, teams &amp; serious builders</p>
+</footer>
+
+
+<script>
+  /* ─── RATING BUTTONS ─── */
+  const scores = new Array(7).fill(null);
+  const labels = [
+    'Roles under stress',
+    'Decision speed',
+    'Communication under urgency',
+    'Quality through growth',
+    'Bottleneck distribution',
+    'Early problem surfacing',
+    'Emotional regulation'
+  ];
+
+  document.querySelectorAll('.rating-track').forEach((track, qi) => {
+    track.querySelectorAll('.rating-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        track.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        scores[qi] = parseInt(btn.dataset.v);
+        updateScore();
+      });
+    });
+  });
+
+  function updateScore() {
+    const answered = scores.filter(v => v !== null);
+    const total = answered.reduce((a, b) => a + b, 0);
+    const pct = (total / 70) * 100;
+    const results = document.getElementById('scoreResults');
+
+    results.classList.add('visible');
+    document.getElementById('scoreNum').textContent = answered.length === 7 ? total : '—';
+    document.getElementById('scoreAnswered').textContent = answered.length;
+    document.getElementById('scoreTotal').textContent = `out of 70 · ${answered.length} of 7 answered`;
+
+    if (answered.length === 7) {
+      document.getElementById('scoreBar').style.width = pct + '%';
+      let insight, level;
+      if (total >= 60) {
+        insight = 'Your systems show strong pressure tolerance. Focus on the lowest-scoring area — even strong systems have one structural vulnerability.';
+        level = 'Resilient Architecture';
+      } else if (total >= 42) {
+        insight = 'Moderate resilience. Your system functions in calm — but several load points are fragile. Prioritize your two lowest scores immediately.';
+        level = 'Partial Resilience';
+      } else if (total >= 28) {
+        insight = 'Significant structural exposure. Multiple weak points exist. Do not wait for the next pressure cycle — begin redesign now.';
+        level = 'Structural Risk';
+      } else {
+        insight = 'High exposure. The current architecture will not survive real pressure. This is not a motivation problem — it is a design problem. Begin with your single lowest score.';
+        level = 'Critical Redesign Needed';
+      }
+      document.getElementById('scoreInsight').innerHTML = insight;
+
+      // Show share trigger if below 42
+      document.getElementById('shareTrigger').style.display = total < 42 ? 'block' : 'none';
+
+      // Find lowest scores
+      const minVal = Math.min(...scores);
+      const priorities = scores.map((v, i) => ({ label: labels[i], score: v }))
+        .filter(item => item.score === minVal);
+
+      const pa = document.getElementById('priorityArea');
+      pa.innerHTML = `<div class="priority-tag">REDESIGN PRIORITY — ${level} (${total}/70)</div>
+        <p style="margin-top:14px; font-size:12px; color:var(--soft); line-height:1.6;">
+          Lowest score: <strong style="color:var(--cream)">${priorities.map(p => p.label).join(', ')}</strong> (${minVal}/10)
+        </p>`;
+    } else {
+      document.getElementById('scoreBar').style.width = '0%';
+      document.getElementById('scoreInsight').textContent = `${answered.length} of 7 answered. Complete all questions to see your full diagnostic picture.`;
+    }
+  }
+
+  /* ─── CLEAR ALL ─── */
+  function clearAll() {
+    if (!confirm('Reset the entire toolkit? All entries will be cleared.')) return;
+    scores.fill(null);
+    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.reflection-box, .redesign-input').forEach(t => t.value = '');
+    document.getElementById('scoreResults').classList.remove('visible');
+  }
+
+  /* ─── SCROLL FADE IN ─── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  /* ─── FIX DUPLICATE REFLECTION ITEM ─── */
+  // Remove the accidentally duplicated paragraph in reflection item 5
+  document.querySelectorAll('.reflection-item').forEach(item => {
+    const qs = item.querySelectorAll('.reflection-q');
+    if (qs.length > 1) qs[0].remove();
+  });
+</script>
+</body>
+</html>
